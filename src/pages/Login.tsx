@@ -1,12 +1,16 @@
 import Input from "../components/inputs/Input";
 import Button from "../components/Button";
 import { NavigateFunction, useNavigate } from "react-router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { AccessBll } from "../core/bll/AccessBll";
 import FormNotes from "../components/FormNotes";
+import { UserContext } from "../contexts/UserContext";
+import { UserModel } from "../core/model/UserModel";
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Login() {
 	const [username, setUsername] = useState<string>("");
+	const { setUserData } = useContext(UserContext)!;
 
 	const navigate: NavigateFunction = useNavigate();
 
@@ -14,6 +18,11 @@ export default function Login() {
 		event.preventDefault();
 
 		if (AccessBll.validateForm(username)) {
+			setUserData(new UserModel(
+				uuidv4(),
+				username
+			));
+
 			navigate('/home');
 		};
 	};

@@ -4,19 +4,22 @@ import Login from "./pages/Login";
 import './index.css'
 import Home from "./pages/Home";
 import { Toaster } from "react-hot-toast";
+import UserProvider from "./contexts/UserContext";
 
 const root = document.getElementById("root");
 
 ReactDOM.createRoot(root!).render(
-	<BrowserRouter>
-		<Routes>
-			<Route path="/" element={<Login />} />
-			<Route path="/home" element={<Home />} />
-			<Route path="/home/:id" element={<Home />} />
-		</Routes>
-		<Toaster
-			position="top-center"
-			reverseOrder={false}
-		/>
-	</BrowserRouter>
+	<UserProvider>
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<Login />} />
+				<Route path="/home" element={<Home />} />
+				<Route path="/home/:id" element={<Home />} />
+			</Routes>
+			<Toaster
+				position="top-center"
+				reverseOrder={false}
+			/>
+		</BrowserRouter>
+	</UserProvider>
 );

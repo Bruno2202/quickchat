@@ -1,4 +1,5 @@
 import React, { createContext, ReactNode, useState } from "react";
+import { UserModel } from "../core/model/UserModel";
 
 
 interface UserProviderProps {

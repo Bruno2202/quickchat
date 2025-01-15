@@ -24,6 +24,9 @@ export default {
       animation: {
         spin: 'spin 1500ms linear infinite',
       },
+      maxWidth: {
+        '4/5': '80%', // Correção aqui, removendo as aspas em torno do valor
+      }
     },
   },
   plugins: [],
