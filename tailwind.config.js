@@ -11,7 +11,7 @@ export default {
         'white': '#FFFFFF',
         'blue': '#0000FF',
         'darkGrey': '#1E2024',
-        'grey': '#454545',
+        'grey': '#3A3D45',
         'lightGrey': '#8D939E',
         'orange': '#FF4E00',
       },
@@ -25,7 +25,7 @@ export default {
         spin: 'spin 1500ms linear infinite',
       },
       maxWidth: {
-        '4/5': '80%', // Correção aqui, removendo as aspas em torno do valor
+        '4/5': '80%',
       }
     },
   },

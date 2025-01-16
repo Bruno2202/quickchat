@@ -1,8 +1,8 @@
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode, useContext, useState, useEffect } from "react";
 import { UserModel } from "../core/model/UserModel";
+import { SocketContext } from "./SocketContext";
 
-
-interface UserProviderProps {
+interface Props {
     children: ReactNode;
 }
 
@@ -13,8 +13,17 @@ interface UserContextType {
 
 export const UserContext = createContext<UserContextType | null>(null);
 
-export default function UserProvider({ children }: UserProviderProps) {
+export default function UserProvider({ children }: Props) {
     const [userData, setUserData] = useState<UserModel | null>(null);
+    const { socket } = useContext(SocketContext) || {};
+
+    useEffect(() => {
+        if (socket) {
+            if (userData) {
+                userData.setSocketId = socket.id!;
+            }
+        }
+    }, [socket, userData]);
 
     return (
         <UserContext.Provider value={{
@@ -24,4 +33,4 @@ export default function UserProvider({ children }: UserProviderProps) {
             {children}
         </UserContext.Provider>
     );
-} 
+}

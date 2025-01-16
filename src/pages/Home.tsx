@@ -3,26 +3,47 @@ import MessageInput from "../components/inputs/MessageInput";
 import Sidebar from "../components/sidebar/Sidebar";
 import StartChat from "../components/StartChat";
 import { useParams } from "react-router";
-import { io } from "socket.io-client";
 import { UserContext } from "../contexts/UserContext";
-import Message from "../components/chat/Message";
+import Chat from "../components/chat/Chat";
+import { SocketContext } from "../contexts/SocketContext";
+import CreateChat from "../components/modals/CreateChat";
+import { ModalContext } from "../contexts/ModalContext";
+import CreateUser from "../components/modals/CreateUser";
 
-const socket = io('http://localhost:3000');
+export interface MessageType {
+    chatId: string;
+    sender: string;
+    senderId: string;
+    message: string;
+}
 
 export default function Home() {
-    const [messages, setMessages] = useState<Array<{ chatId: string, sender: string, senderId: string, message: string }>>([]);
+    const [messages, setMessages] = useState<MessageType[]>([]);
     const [input, setInput] = useState('');
 
     const { id: chatId } = useParams();
     const { userData } = useContext(UserContext)!
+    const { socket } = useContext(SocketContext)!;
+    const { openModal } = useContext(ModalContext)!;
 
     useEffect(() => {
-        if (chatId) {
+        setMessages([]);
+    }, [chatId]);
+
+    useEffect(() => {
+        console.log(chatId, socket, userData?.getUsername);
+        
+        if (chatId && socket) {
+
+            if (!userData?.getUsername) {
+                openModal("CreateUser");
+            }
+
             socket.emit('joinRoom', chatId);
 
-            socket.on('receiveMessage', (message: { chatId: string, sender: string, senderId: string, message: string }) => {
+            socket.on('receiveMessage', (message: MessageType) => {
                 socket.emit('leaveRoom', message);
-                setMessages((prev) => [...prev, message]);
+                setMessages((prev): MessageType[] => [...prev, message]);
             });
 
             return () => {
@@ -30,24 +51,28 @@ export default function Home() {
                 socket.off('receiveMessage');
             };
         }
-    }, [chatId]);
+    }, [chatId, socket]);
 
-    const sendMessage = () => {
-        if (input.trim()) {
-            const message = {
-                chatId,
-                sender: userData?.getUsername,
-                senderId: userData?.getId,
-                message: input,
-            };
-
-            console.log(message)
-
-            socket.emit('sendMessage', message);
-            setMessages((prev) => [...prev, message]);
-            setInput('');
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            handleSendMessage();
         }
     };
+
+    function handleSendMessage() {
+        if (input.trim() && socket) {
+            const message: MessageType = {
+                chatId: chatId!,
+                sender: userData!.getUsername,
+                senderId: userData!.getId,
+                message: input!
+            };
+
+            socket.emit('sendMessage', message);
+            setMessages((prev: MessageType[]) => [...prev, message]);
+            setInput('');
+        }
+    }
 
     return (
         <div className="h-screen flex">
@@ -57,24 +82,22 @@ export default function Home() {
                     {!chatId ? (
                         <StartChat />
                     ) : (
-                        <div className="flex flex-col overflow-y-auto h-full gap-1">
-                            {messages.map((msg, index) => (
-                                <Message
-                                    index={index}
-                                    message={msg}
-                                    userData={userData!}
-                                />
-                            ))}
-                        </div>
+                        <Chat
+                            messages={messages}
+                            userData={userData!}
+                        />
                     )}
                     <MessageInput
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        onSend={sendMessage}
+                        onSend={handleSendMessage}
+                        onKeyDown={handleKeyDown}
                         placeholder="Digite alguma mensagem..."
                     />
                 </div>
             </main>
+            <CreateChat />
+            <CreateUser />
         </div>
     );
 }

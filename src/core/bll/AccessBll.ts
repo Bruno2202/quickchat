@@ -1,18 +1,9 @@
-import { AccessController } from "../controllers/AccessController";
-
 export class AccessBll {
-    static validateForm(username: string) {
-        if (!username) {
-            AccessController.validateForm(false);
-            return false;
-        } 
-
-        if (username.length > 15) {
-            AccessController.validateForm(false);
+    static validateForm(username: string): boolean {
+        if (username.length < 1 || username.length > 15) {
             return false;
         }
 
-        AccessController.validateForm(true);
         return true;
     }
 }

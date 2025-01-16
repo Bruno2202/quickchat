@@ -5,9 +5,10 @@ interface Props {
     placeholder: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     onSend: () => void;
+    onKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void; // Adicionando onKeyDown
 }
 
-export default function MessageInput({ value, placeholder, onChange, onSend }: Props) {
+export default function MessageInput({ value, placeholder, onChange, onSend, onKeyDown }: Props) {
     return (
         <div className="flex flex-row gap-4 items-center">
             <input
@@ -15,6 +16,7 @@ export default function MessageInput({ value, placeholder, onChange, onSend }: P
                 onChange={onChange}
                 className="flex flex-1 outline-none rounded-8 py-2 px-4 placeholder:font-semibol bg-darkGrey"
                 placeholder={placeholder}
+                onKeyDown={onKeyDown}
             />
             <Send onClick={onSend} className='hover:text-blue transition-all hover:size-8 duration-300 cursor-pointer' />
         </div>
