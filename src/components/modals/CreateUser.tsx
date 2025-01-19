@@ -1,6 +1,5 @@
 import { useContext, useState } from "react";
 import Button from "../Button";
-import { v4 as uuidv4 } from 'uuid';
 import { ModalContext } from "../../contexts/ModalContext";
 import OpacityOverlay from "./OpacityOverlay";
 import Input from "../inputs/Input";
@@ -8,21 +7,41 @@ import FormNotes from "../FormNotes";
 import { UserContext } from "../../contexts/UserContext";
 import { AccessController } from "../../core/controllers/AccessController";
 import { UserModel } from "../../core/model/UserModel";
+import { NavigateFunction, useNavigate } from "react-router";
+import { SocketContext } from "../../contexts/SocketContext";
+import toast from "react-hot-toast";
 
-export default function CreateUser() {
+interface Props {
+    navigateTo?: string;
+}
+
+export default function CreateUser({ navigateTo }: Props) {
     const [username, setUsername] = useState<string>("");
 
     const { isOpenModal, closeModal } = useContext(ModalContext)!;
     const { setUserData } = useContext(UserContext)!;
+    const { socket } = useContext(SocketContext)!;
+
+    const navigate: NavigateFunction = useNavigate();
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (AccessController.validateForm(username)) {
+            if (!socket || !socket.id) {
+                toast.error("Conexão inválida. Tente novamente.");
+                return;
+            }
+
             setUserData(new UserModel(
-                uuidv4(),
+                socket.id,
                 username,
+                []
             ));
+
+            if (navigateTo) {
+                navigate(navigateTo);
+            }
 
             closeModal("CreateUser");
         };

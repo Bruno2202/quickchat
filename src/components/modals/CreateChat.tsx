@@ -5,21 +5,59 @@ import { v4 as uuidv4 } from 'uuid';
 import { ModalContext } from "../../contexts/ModalContext";
 import toast from "react-hot-toast";
 import OpacityOverlay from "./OpacityOverlay";
+import ChatModel from "../../core/model/ChatModel";
+import { UserContext } from "../../contexts/UserContext";
+import { ChatController } from "../../core/controllers/ChatController";
+import { UserModel } from "../../core/model/UserModel";
 
 export default function CreateChat() {
     const [time, setTime] = useState<number>(3);
     const [chatLink, setChatLink] = useState<string>("");
+    const [newChat, setNewChat] = useState<ChatModel | null>(null);
 
-    const { isOpenModal, closeModal } = useContext(ModalContext)!;
+    const { userData, setUserData } = useContext(UserContext)!
+    const { isOpenModal, closeModal } = useContext(ModalContext)!
 
     useEffect(() => {
-        setChatLink(`http://localhost:5173/home/${uuidv4().slice(0, 8)}`);
-    }, []);
+        if (isOpenModal("CreateChat") && userData && !newChat) {
+            const newChat = new ChatModel(
+                uuidv4().slice(0, 8),
+                userData.getId,
+                new Date()
+            );
+
+            setNewChat(newChat);
+
+            const handleCreateChat = async () => {
+                if (newChat) {
+                    setChatLink(`http://localhost:5173/home/${newChat.getId}`);
+
+                    await ChatController.createChat(newChat);
+
+                    try {
+                        const updatedChats: ChatModel[] = await ChatController.getUserChats(newChat.getOwnerId);
+                        if (userData) {
+                            const userDataUpdated = new UserModel(
+                                userData.getId,
+                                userData.getUsername,
+                                updatedChats
+                            );
+
+                            setUserData(userDataUpdated);
+                        }
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
+            };
+            handleCreateChat();
+        }
+    }, [isOpenModal, newChat]);
 
     useEffect(() => {
         if (isOpenModal("CreateChat")) {
             if (time === 0) {
-                return
+                return;
             };
 
             const intervalId = setInterval(() => {
@@ -43,6 +81,7 @@ export default function CreateChat() {
         });
         closeModal("CreateChat");
         setTime(3);
+        setNewChat(null);
     }
 
     return (

@@ -1,6 +1,6 @@
-import React, { createContext, ReactNode, useContext, useState, useEffect } from "react";
+import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { UserModel } from "../core/model/UserModel";
-import { SocketContext } from "./SocketContext";
+import { ChatController } from "../core/controllers/ChatController";
 
 interface Props {
     children: ReactNode;
@@ -15,15 +15,15 @@ export const UserContext = createContext<UserContextType | null>(null);
 
 export default function UserProvider({ children }: Props) {
     const [userData, setUserData] = useState<UserModel | null>(null);
-    const { socket } = useContext(SocketContext) || {};
 
     useEffect(() => {
-        if (socket) {
+        async function handleGetUserChats() {
             if (userData) {
-                userData.setSocketId = socket.id!;
+                await ChatController.getUserChats(userData?.getId);
             }
         }
-    }, [socket, userData]);
+        handleGetUserChats();
+    }, [userData]);
 
     return (
         <UserContext.Provider value={{

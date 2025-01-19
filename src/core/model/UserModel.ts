@@ -1,19 +1,21 @@
+import ChatModel from "./ChatModel";
+
 export class UserModel {
     private id: string;
     private username: string;
-    private socketId?: string;
+    private chats?: ChatModel[];
 
-    constructor(id: string, username: string, socketId?: string) {
+    constructor(id: string, username: string, chats: ChatModel[]) {
         this.id = id;
         this.username = username;
-        this.socketId = socketId;
+        this.chats = chats;
     }
 
-    get getId() { return this.id; }
-    get getUsername() { return this.username; }
-    get getSocketId() { return this.socketId; }
+    get getId(): string { return this.id; }
+    get getUsername(): string { return this.username; }
+    get getChats(): ChatModel[] | undefined { return this.chats; }
 
     set setId(id: string) { this.id = id; }
     set setUsername(username: string) { this.username = username; }
-    set setSocketId(socketId: string) { this.socketId = socketId; }
+    set setChats(chats: ChatModel[]) { this.chats = chats; }
 } 

@@ -1,17 +1,19 @@
 import { House, LogOut, MessageCircle, PanelRightClose, Plus } from "lucide-react";
-import ChatPreview from "./ChatPreview";
-import NoMesages from "./NoMesages";
 import Option from "./Option";
 import { useContext, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
 import Footer from "./Footer";
 import { ModalContext } from "../../contexts/ModalContext";
-// import ChatModel from "../../core/model/ChatModel";
+import { UserContext } from "../../contexts/UserContext";
+import NoMessages from "./NoMessages";
+import ChatModel from "../../core/model/ChatModel";
+import ChatPreview from "./ChatPreview";
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     const { openModal } = useContext(ModalContext)!;
+    const { userData } = useContext(UserContext)!;
 
     const navigate: NavigateFunction = useNavigate();
 
@@ -42,20 +44,21 @@ export default function Sidebar() {
                     <MessageCircle /> Conversas
                 </h1>
                 <div className="flex flex-col h-full overflow-y-auto gap-2 ">
-                    {/* <ChatPreview
-                        id={"1"}
-                        username="Sala 1"
-                        color="orange"
-                    />
-                    <ChatPreview
-                        id={"2"}
-                        username="Sala 2"
-                        color="orange"
-                    /> */}
-                    <NoMesages />
+                    {userData?.getChats && userData.getChats.length > 0 ? (
+                        userData.getChats.map((chat: ChatModel) => {
+                            return (
+                                <ChatPreview
+                                    key={chat.getId}
+                                    chat={chat}
+                                />
+                            );
+                        })
+                    ) : (
+                        <NoMessages />
+                    )}
                 </div>
                 <Footer />
             </div>
-        </aside>
+        </aside >
     );
 }

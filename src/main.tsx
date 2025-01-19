@@ -13,8 +13,8 @@ const root = document.getElementById("root");
 
 ReactDOM.createRoot(root!).render(
 	<ModalProvider>
-		<SocketProvider>
-			<UserProvider>
+		<UserProvider>
+			<SocketProvider>
 				<BrowserRouter>
 					<Routes>
 						<Route path="/" element={<Login />} />
@@ -38,7 +38,7 @@ ReactDOM.createRoot(root!).render(
 						reverseOrder={false}
 					/>
 				</BrowserRouter>
-			</UserProvider>
-		</SocketProvider>
+			</SocketProvider>
+		</UserProvider>
 	</ModalProvider>
 );

@@ -9,6 +9,8 @@ import { SocketContext } from "../contexts/SocketContext";
 import CreateChat from "../components/modals/CreateChat";
 import { ModalContext } from "../contexts/ModalContext";
 import CreateUser from "../components/modals/CreateUser";
+import { ChatController } from "../core/controllers/ChatController";
+import ChatModel from "../core/model/ChatModel";
 
 export interface MessageType {
     chatId: string;
@@ -24,26 +26,51 @@ export default function Home() {
     const { id: chatId } = useParams();
     const { userData } = useContext(UserContext)!
     const { socket } = useContext(SocketContext)!;
-    const { openModal } = useContext(ModalContext)!;
+    const { openModal, isOpenModal } = useContext(ModalContext)!;
 
     useEffect(() => {
-        setMessages([]);
-    }, [chatId]);
+        if (chatId) {
+            setMessages([]);
 
-    useEffect(() => {
-        console.log(chatId, socket, userData?.getUsername);
-        
-        if (chatId && socket) {
+            const handleChatData = async () => {
+                try {
+                    const chat: ChatModel | null = await ChatController.getChat(chatId);
 
-            if (!userData?.getUsername) {
-                openModal("CreateUser");
+                    if (chat && userData && socket) {
+                        if (chat.getId !== userData?.getId && !chat.getGuestId) {
+                            const handleUpdateChat = async () => {
+                                try {
+
+                                    const updatedChat = new ChatModel(
+                                        chatId,
+                                        chat.getOwnerId,
+                                        chat.getCreation,
+                                        userData?.getId
+                                    );
+
+                                    await ChatController.updateChat(updatedChat);
+
+                                    socket.emit('joinRoom', chatId);
+                                } catch (error) {
+                                    console.log(error);
+                                }
+                            }
+                            handleUpdateChat();
+                        }
+                    }
+                } catch (error) {
+                    console.log(error);
+                }
             }
+            handleChatData();
+        }
+    }, [chatId, userData]);
 
-            socket.emit('joinRoom', chatId);
-
+    useEffect(() => {
+        if (chatId && socket) {
             socket.on('receiveMessage', (message: MessageType) => {
-                socket.emit('leaveRoom', message);
-                setMessages((prev): MessageType[] => [...prev, message]);
+                setMessages((prev) => [...prev, message]);
+                console.log("A")
             });
 
             return () => {
@@ -52,6 +79,12 @@ export default function Home() {
             };
         }
     }, [chatId, socket]);
+
+    useEffect(() => {
+        if (!userData?.getUsername && !isOpenModal("CreateUser")) {
+            openModal("CreateUser");
+        }
+    }, [openModal, userData?.getUsername, isOpenModal]);
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
