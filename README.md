@@ -1,5 +1,5 @@
-# [QuickChat](h![Banner](https://github.com/user-attachments/assets/51e4efdb-85b4-47e1-9e2e-d14755bf2f99)
-ttps://github.com/Bruno2202/quickchat) &middot; ![Status: Em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
+![Banner](https://github.com/user-attachments/assets/ea947011-c39a-4f44-b1f9-9f89230f8c0b)
+# [QuickChat](https://github.com/Bruno2202/quickchat) &middot; ![Status: Em Desenvolvimento](http://img.shields.io/static/v1?label=STATUS&message=EM%20DESENVOLVIMENTO&color=GREEN&style=for-the-badge)
 
 **QuickChat** é uma plataforma de chat temporário onde dois usuários podem se conectar a uma sala e conversar em tempo real.
 
