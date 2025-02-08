@@ -11,6 +11,7 @@ interface Props {
 
 interface SocketContextType {
     socket: Socket | null;
+    setSocket: React.Dispatch<React.SetStateAction<Socket | null>>
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
@@ -21,16 +22,14 @@ export default function SocketProvider({ children }: Props) {
     const { userData, setUserData } = useContext(UserContext)!;
 
     useEffect(() => {
-        const socket = io('http://localhost:3000');
-
-        socket.on('connect', () => {
-            setSocketInstance(socket);
-        });
-
-        return () => {
-            socket.disconnect();
-        };
-    }, []);
+        if (socketInstance === null) {
+            const socket = io(import.meta.env.VITE_API_DOMAIN);
+            
+            socket.on('connect', () => {
+                setSocketInstance(socket);
+            });
+        } 
+    }, [socketInstance]);
 
     useEffect(() => {
         if (socketInstance && userData) {
@@ -39,6 +38,7 @@ export default function SocketProvider({ children }: Props) {
                     const updatedChats: ChatModel[] = await ChatController.getUserChats(userData.getId);
 
                     console.log(updatedChats)
+
                     if (userData) {
                         const userDataUpdated = new UserModel(
                             userData.getId,
@@ -60,7 +60,10 @@ export default function SocketProvider({ children }: Props) {
 
     return (
         <SocketContext.Provider
-            value={{ socket: socketInstance }}
+            value={{
+                socket: socketInstance,
+                setSocket: setSocketInstance
+            }}
         >
             {children}
         </SocketContext.Provider>
