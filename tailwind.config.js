@@ -26,7 +26,10 @@ export default {
       },
       maxWidth: {
         '4/5': '80%',
-      }
+      },
+      fontFamily: {
+        kumbh: ["Kumbh Sans"],
+      },
     },
   },
   plugins: [],
