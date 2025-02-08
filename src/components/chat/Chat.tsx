@@ -1,10 +1,9 @@
+import MessageModel from "../../core/model/MessageModel";
 import { UserModel } from "../../core/model/UserModel";
 import Message from "./Message";
-import { MessageType } from "../../pages/Home";
-import { useEffect } from "react";
 
 interface Props {
-    messages: MessageType[];
+    messages: MessageModel[];
     userData: UserModel;
 }
 

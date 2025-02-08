@@ -5,7 +5,7 @@ import OpacityOverlay from "./OpacityOverlay";
 import Input from "../inputs/Input";
 import FormNotes from "../FormNotes";
 import { UserContext } from "../../contexts/UserContext";
-import { AccessController } from "../../core/controllers/AccessController";
+import { AuthController } from "../../core/controllers/AuthController";
 import { UserModel } from "../../core/model/UserModel";
 import { NavigateFunction, useNavigate } from "react-router";
 import { SocketContext } from "../../contexts/SocketContext";
@@ -24,14 +24,20 @@ export default function CreateUser({ navigateTo }: Props) {
 
     const navigate: NavigateFunction = useNavigate();
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-
-        if (AccessController.validateForm(username)) {
+        if (AuthController.validateForm(username)) {
             if (!socket || !socket.id) {
                 toast.error("Conexão inválida. Tente novamente.");
                 return;
             }
+
+            const response = await AuthController.login(socket.id, username);
+            if (!response) {
+                return;
+            }
+
+            sessionStorage.setItem("token", response.token);
 
             setUserData(new UserModel(
                 socket.id,
@@ -45,6 +51,7 @@ export default function CreateUser({ navigateTo }: Props) {
 
             closeModal("CreateUser");
         };
+
     };
 
     return (

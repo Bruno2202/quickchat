@@ -11,101 +11,125 @@ import { ModalContext } from "../contexts/ModalContext";
 import CreateUser from "../components/modals/CreateUser";
 import { ChatController } from "../core/controllers/ChatController";
 import ChatModel from "../core/model/ChatModel";
-
-export interface MessageType {
-    chatId: string;
-    sender: string;
-    senderId: string;
-    message: string;
-}
+import { ChatContext } from "../contexts/ChatContext";
+import MessageModel from "../core/model/MessageModel";
+import ClosedChat from "../components/modals/ClosedChat";
+import NotFoundChat from "../components/modals/NotFoundChat";
+// import DevMonitor from "../components/dev/DevMonitor";
 
 export default function Home() {
-    const [messages, setMessages] = useState<MessageType[]>([]);
+    const [messages, setMessages] = useState<MessageModel[]>([]);
     const [input, setInput] = useState('');
 
     const { id: chatId } = useParams();
-    const { userData } = useContext(UserContext)!
+    const { userData } = useContext(UserContext)!;
     const { socket } = useContext(SocketContext)!;
-    const { openModal, isOpenModal } = useContext(ModalContext)!;
+    const { openModal } = useContext(ModalContext)!;
+    const { currentChat, setCurrentChat } = useContext(ChatContext)!;
 
     useEffect(() => {
         if (chatId) {
-            setMessages([]);
+            const handleGetChatData = async () => {
+                const chatInfo: ChatModel | null = await ChatController.getChatInfo(chatId);
 
-            const handleChatData = async () => {
-                try {
-                    const chat: ChatModel | null = await ChatController.getChat(chatId);
+                handleChatAccess(chatInfo);
+            }
 
-                    if (chat && userData && socket) {
-                        if (chat.getId !== userData?.getId && !chat.getGuestId) {
-                            const handleUpdateChat = async () => {
-                                try {
+            const handleChatAccess = async (chatInfo: ChatModel | null) => {
+                if (!chatInfo) {
+                    openModal("NotFoundChat");
+                    return;
+                }
 
-                                    const updatedChat = new ChatModel(
-                                        chatId,
-                                        chat.getOwnerId,
-                                        chat.getCreation,
-                                        userData?.getId
-                                    );
+                if (chatInfo.getGuestId && userData?.getId !== chatInfo.getOwnerId && userData?.getId !== chatInfo.getGuestId) {
+                    openModal("ClosedChat");
+                    return;
+                }
 
-                                    await ChatController.updateChat(updatedChat);
+                if (!userData) {
+                    openModal("CreateUser");
+                }
 
-                                    socket.emit('joinRoom', chatId);
-                                } catch (error) {
-                                    console.log(error);
-                                }
+                if (socket) {
+                    if (userData && userData.getId !== chatInfo.getOwnerId) {
+                        const handleUpdateChat = async () => {
+                            try {
+                                const updatedChat = new ChatModel(
+                                    chatId,
+                                    chatInfo.getOwnerId,
+                                    chatInfo.getCreation,
+                                    userData?.getId
+                                );
+
+                                await ChatController.updateChat(updatedChat);
+                            } catch (error) {
+                                console.log(error);
                             }
-                            handleUpdateChat();
                         }
+                        handleUpdateChat();
                     }
-                } catch (error) {
-                    console.log(error);
+                    socket.emit('leaveRoom', currentChat?.getId);
+
+                    const chat: ChatModel | null = await ChatController.getChat(chatId);
+                    setCurrentChat(chat);
+
+                    socket.emit('joinRoom', chatId);
                 }
             }
-            handleChatData();
+
+            setMessages([]);
+            handleGetChatData();
         }
     }, [chatId, userData]);
 
     useEffect(() => {
         if (chatId && socket) {
-            socket.on('receiveMessage', (message: MessageType) => {
+            socket.on('receiveMessage', (sentMessage) => {
+                const message = new MessageModel(
+                    sentMessage.message,
+                    sentMessage.senderId,
+                    sentMessage.sentAt,
+                    sentMessage.id
+                );
+
                 setMessages((prev) => [...prev, message]);
-                console.log("A")
             });
 
             return () => {
-                socket.emit('leaveRoom', chatId);
                 socket.off('receiveMessage');
             };
         }
     }, [chatId, socket]);
 
     useEffect(() => {
-        if (!userData?.getUsername && !isOpenModal("CreateUser")) {
-            openModal("CreateUser");
+        if (currentChat) {
+            const messages: MessageModel[] = currentChat.getMessages;
+            const orderMessages = messages.sort((a, b) =>
+                new Date(a.getSentAt).getTime() - new Date(b.getSentAt).getTime()
+            );
+            setMessages(orderMessages);
         }
-    }, [openModal, userData?.getUsername, isOpenModal]);
+    }, [currentChat]);
+
+    function handleSendMessage() {
+        if (input.trim() && socket && userData && chatId) {
+            const message = new MessageModel(
+                input,
+                userData.getId,
+                new Date()
+            );
+
+            socket.emit('sendMessage', { chatId, message });
+            setMessages((prev: MessageModel[]) => [...prev, message]);
+            setInput('');
+        }
+    }
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
             handleSendMessage();
         }
     };
-
-    function handleSendMessage() {
-        if (input.trim() && socket) {
-            const message: MessageType = {
-                chatId: chatId!,
-                sender: userData!.getUsername,
-                senderId: userData!.getId,
-                message: input!
-            };
-
-            socket.emit('sendMessage', message);
-            setMessages((prev: MessageType[]) => [...prev, message]);
-            setInput('');
-        }
-    }
 
     return (
         <div className="h-screen flex">
@@ -131,6 +155,9 @@ export default function Home() {
             </main>
             <CreateChat />
             <CreateUser />
+            <ClosedChat />
+            <NotFoundChat />
+            {/* <DevMonitor /> */}
         </div>
     );
 }

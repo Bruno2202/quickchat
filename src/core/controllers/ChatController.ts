@@ -36,11 +36,20 @@ export class ChatController {
                 return chat;
             }
 
-            toast.error("Esse chat não existe");
             return null;
         } catch (error) {
             toast.error("Erro ao recuperar dados da conversa");
             console.log(`Erro ao recuperar dados da conversa: ${error}`);
+            return null;
+        }
+    }
+
+    static async getChatInfo(chatId: string): Promise<ChatModel | null> {
+        try {
+            return await ChatBll.getChatStatus(chatId);
+        } catch (error) {
+            toast.error(`Não foi possível obter status do chat`);
+            console.log(`Erro ao checar status do servidor: ${error}`);
             return null;
         }
     }

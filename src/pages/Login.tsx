@@ -4,8 +4,7 @@ import { ModalContext } from "../contexts/ModalContext";
 
 export default function Login() {
 	const { openModal } = useContext(ModalContext)!;
-
-
+	
 	useEffect(() => {
 		openModal("CreateUser");
 	}, []);

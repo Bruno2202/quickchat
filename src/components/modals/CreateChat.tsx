@@ -30,7 +30,7 @@ export default function CreateChat() {
 
             const handleCreateChat = async () => {
                 if (newChat) {
-                    setChatLink(`http://localhost:5173/home/${newChat.getId}`);
+                    setChatLink(`http://localhost:5173/${newChat.getId}`);
 
                     await ChatController.createChat(newChat);
 
@@ -89,7 +89,7 @@ export default function CreateChat() {
             <div className="flex items-center justify-center absolute w-full h-full">
                 <OpacityOverlay />
                 <div className="flex flex-col items-center relative w-auto h-auto p-4 bg-darkGrey rounded-8">
-                    <p className="text-white font-bold text-1.8rem">Um link para acesso à sala foi gerado!</p>
+                    <p className="text-white font-bold text-1.8rem  text-center">Um link para acesso à sala foi gerado!</p>
                     <div className="flex flex-row items-center gap-2">
                         <Link className="text-lightGrey" size={20} />
                         <p className="text-lightGrey font-medium">Copie-o e envie para outra pessoa para iniciar a conversa</p>
