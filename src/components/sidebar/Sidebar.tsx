@@ -11,6 +11,7 @@ import ChatPreview from "./ChatPreview";
 import { ChatContext } from "../../contexts/ChatContext";
 import { SocketContext } from "../../contexts/SocketContext";
 
+
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
@@ -45,9 +46,9 @@ export default function Sidebar() {
 
     return (
         <aside
-            className={`flex flex-col p-4 text-white bg-darkGrey ${isOpen ? 'w-80' : 'w-16'} transition-all duration-300 h-screen `}
+            className={`flex flex-col p-4 text-white ${isOpen ? 'w-80 bg-darkGrey' : 'w-16 bg-black'} duration-300 h-full`}
         >
-            <div className={`flex ${isOpen ? 'flex-row justify-between mb-4' : 'flex-col-reverse gap-4 h-full'} `}>
+            <div className={`flex ${isOpen ? 'flex-row justify-between mb-4' : 'flex-col-reverse gap-4 h-full'}`}>
                 <div className="mt-auto">
                     <LogOut
                         className="hover:text-orange transition-all duration-100 ease-in cursor-pointer"
@@ -65,14 +66,14 @@ export default function Sidebar() {
             </div>
 
             {isOpen && (
-                <div className="flex flex-col flex-1 gap-4 opacity-100 transition-opacity duration-100">
+                <div className="flex flex-col flex-1 gap-4 opacity-100 transition-opacity duration-100 h-full overflow-hidden">
                     <div className="flex flex-col">
                         <Option onClick={() => handleCreateChat()} Icon={Plus} text="Criar conversa" />
                     </div>
                     <h1 className="flex flex-row gap-2 items-center text-xl font-bold">
                         <MessageCircle /> Conversas
                     </h1>
-                    <div className="flex flex-col h-full overflow-y-auto gap-2">
+                    <div className="flex flex-col flex-1 overflow-y-auto gap-2">
                         {userData?.getChats && userData.getChats.length > 0 ? (
                             userData.getChats.map((chat: ChatModel) => (
                                 <ChatPreview key={chat.getId} chat={chat} />

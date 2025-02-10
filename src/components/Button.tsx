@@ -8,7 +8,7 @@ export default function Button({ text, onClick, disabled }: Props) {
 
     return (
         <button
-            className="p-2 bg-grey rounded-8 w-full text-white font-semibold hover:bg-blue transition-colors"
+            className="p-2 bg-grey rounded-8 w-full text-white font-semibold hover:bg-blue btnAnimation transition-all"
             onClick={onClick}
             disabled={disabled}
         >
