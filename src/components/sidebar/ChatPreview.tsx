@@ -2,6 +2,8 @@ import { LoaderCircle, UserRound } from "lucide-react";
 import { NavigateFunction, useNavigate } from "react-router";
 import ChatModel from "../../core/model/ChatModel";
 import toast from "react-hot-toast";
+import { motion } from "motion/react"
+import CursorTooltip from "../CursorTooltip";
 
 interface Props {
     chat: ChatModel;
@@ -33,15 +35,17 @@ export default function ChatPreview({ chat }: Props) {
                 <p>{chat.getGuestId}</p>
             </div>
         ) : (
-            <div
-                className="flex flex-row items-center w-full h-8 gap-2 items-cente rounded-8 text-lightGrey hover:bg-grey font-semibold transition-colors cursor-pointer animate-pulse"
-                onClick={() => handleCopyLink()}
-            >
-                <div className={`flex items-center justify-center rounded-8 w-8 h-8`}>
-                    <LoaderCircle className="text-lightGrey animate-spin" />
+            <CursorTooltip text="🔗 Copiar" position={"bottomRight"}>
+                <div
+                    className="flex flex-row items-center w-full h-8 gap-2 rounded-8 text-lightGrey hover:bg-grey font-semibold cursor-pointer animate-pulse btnAnimation"
+                    onClick={() => handleCopyLink()}
+                >
+                    <div className={`flex items-center justify-center rounded-8 w-8 h-8`}>
+                        <LoaderCircle className="text-lightGrey animate-spin" />
+                    </div>
+                    <p>Aguardando...</p>
                 </div>
-                <p>Aguardando...</p>
-            </div>
+            </CursorTooltip>
         ))
     );
 }
