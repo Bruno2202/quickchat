@@ -14,12 +14,14 @@ export default {
         'grey': '#3A3D45',
         'lightGrey': '#8D939E',
         'orange': '#FF4E00',
+        'yellow': '#D79E0A'
       },
       borderRadius: {
         '8': '8px',
       },
       fontSize: {
-        '1.8rem': '1.8rem'
+        '1.8rem': '1.8rem',
+        '3rem': '3rem'
       },
       animation: {
         spin: 'spin 1500ms linear infinite',
@@ -29,6 +31,10 @@ export default {
       },
       fontFamily: {
         kumbh: ["Kumbh Sans"],
+      },
+      animation: {
+        bounce200: "bounce 1s infinite 200ms",
+        bounce400: "bounce 1s infinite 400ms",
       },
     },
   },

@@ -24,3 +24,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #25272c;
 }
+
+@layer components {
+    .btnAnimation {
+        @apply active:shadow-sm active:scale-95 duration-75 transition-all;
+    }
+}
