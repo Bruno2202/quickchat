@@ -2,14 +2,16 @@ import { LoaderCircle, UserRound } from "lucide-react";
 import { NavigateFunction, useNavigate } from "react-router";
 import ChatModel from "../../core/model/ChatModel";
 import toast from "react-hot-toast";
-import { motion } from "motion/react"
 import CursorTooltip from "../CursorTooltip";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 
 interface Props {
     chat: ChatModel;
 }
 
 export default function ChatPreview({ chat }: Props) {
+    const { userData } = useContext(UserContext)!;
     const navigate: NavigateFunction = useNavigate();
 
     function handleOnClick() {
@@ -32,7 +34,11 @@ export default function ChatPreview({ chat }: Props) {
                 <div className={`flex items-center justify-center bg-[blue] rounded-8 w-8 h-8`}>
                     <UserRound className="text-darkGrey" />
                 </div>
-                <p>{chat.getGuestId}</p>
+                {userData?.getId == chat.getOwnerId ? (
+                    <p>{chat.getGuestUsername}</p>
+                ) : (
+                    <p>{chat.getOwnerUsername}</p>
+                )}
             </div>
         ) : (
             <CursorTooltip text="🔗 Copiar" position={"bottomRight"}>

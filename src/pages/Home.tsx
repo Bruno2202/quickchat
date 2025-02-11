@@ -25,7 +25,7 @@ export default function Home() {
     const { userData } = useContext(UserContext)!;
     const { socket } = useContext(SocketContext)!;
     const { openModal } = useContext(ModalContext)!;
-    const { currentChat, setCurrentChat } = useContext(ChatContext)!;
+    const { currentChat, setCurrentChat, setChats } = useContext(ChatContext)!;
 
     useEffect(() => {
         if (chatId) {
@@ -57,8 +57,10 @@ export default function Home() {
                                 const updatedChat = new ChatModel(
                                     chatId,
                                     chatInfo.getOwnerId,
+                                    chatInfo.getOwnerUsername,
                                     chatInfo.getCreation,
-                                    userData?.getId
+                                    userData?.getId,
+                                    userData?.getUsername
                                 );
 
                                 await ChatController.updateChat(updatedChat);
@@ -66,7 +68,8 @@ export default function Home() {
                                 console.log(error);
                             }
                         }
-                        handleUpdateChat();
+                        await handleUpdateChat();
+                        setChats(await ChatController.getUserChats(userData.getId));
                     }
                     socket.emit('leaveRoom', currentChat?.getId);
 
@@ -88,6 +91,7 @@ export default function Home() {
                 const message = new MessageModel(
                     sentMessage.message,
                     sentMessage.senderId,
+                    sentMessage.senderUsername,
                     sentMessage.sentAt,
                     sentMessage.id
                 );
@@ -116,6 +120,7 @@ export default function Home() {
             const message = new MessageModel(
                 input,
                 userData.getId,
+                userData.getUsername,
                 new Date()
             );
 

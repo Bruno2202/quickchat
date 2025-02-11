@@ -16,7 +16,7 @@ export default function Message({ index, userData, message }: Props) {
             <div key={index} className={`flex ${message.getSenderId === userData?.getId ? 'justify-end px-4' : 'justify-start'} w-full`}>
                 <div className={`flex flex-col ${message.getSenderId === userData?.getId ? 'bg-grey' : 'bg-blue'} w-auto max-w-4/5 p-2 rounded-8`}>
                     {message.getSenderId !== userData?.getId && (
-                        <p className="font-bold">{message.getSenderId}</p>
+                        <p className="font-bold">{message.getSenderUsername}</p>
                     )}
                     <p className="break-words">
                         {message.getMessage}

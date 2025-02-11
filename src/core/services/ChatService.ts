@@ -5,14 +5,17 @@ import api from "../../config/apiConfig";
 interface ChatResponse {
     id: string;
     ownerId: string;
+    ownerUsername: string;
     creation: Date;
     guestId?: string;
+    guestUsername?: string;
     messages: MessageResponse[];
 }
 
 interface MessageResponse {
     message: string;
     senderId: string;
+    senderUsername: string;
     sentAt: Date;
     id: string;
 }
@@ -36,12 +39,15 @@ export class ChatService {
                 return new ChatModel(
                     chat.id,
                     chat.ownerId,
+                    chat.ownerUsername,
                     chat.creation,
                     chat.guestId,
+                    chat.guestUsername,
                     chat.messages?.map((message) => {
                         return new MessageModel(
                             message.message,
                             message.senderId,
+                            message.senderUsername,
                             message.sentAt,
                             message.id
                         );
@@ -64,12 +70,15 @@ export class ChatService {
                 const chat: ChatModel = new ChatModel(
                     response.data.chat.id,
                     response.data.chat.ownerId,
+                    response.data.chat.ownerUsername,
                     response.data.chat.creation,
                     response.data.chat.guestId,
+                    response.data.chat.guestUsername,
                     response.data.chat.messages.map((message: MessageResponse) => {
                         return new MessageModel(
                             message.message,
                             message.senderId,
+                            message.senderUsername,
                             message.sentAt,
                             message.id
                         )
@@ -86,15 +95,17 @@ export class ChatService {
         }
     }
 
-    static async getChatStatus(chatId: string): Promise<ChatModel | null> {
+    static async getChatInfo(chatId: string): Promise<ChatModel | null> {
         try {
             const response = await api.get(`/chat/info/${chatId}`);
 
             const chat: ChatModel = new ChatModel(
                 response.data.chat.id,
                 response.data.chat.ownerId,
+                response.data.chat.ownerUsername,
                 response.data.chat.creation,
                 response.data.chat.guestId,
+                response.data.chat.guestUsername
             );
 
             return chat;
@@ -109,16 +120,20 @@ export class ChatService {
             const response = await api.put(`/chat`, {
                 id: updateChat.getId,
                 ownerId: updateChat.getOwnerId,
+                ownerUsername: updateChat.getOwnerUsername,
                 creation: updateChat.getCreation,
                 guestId: updateChat.getGuestId,
+                guestUsername: updateChat.getGuestUsername,
             });
 
             if (response.data) {
                 const chat: ChatModel = new ChatModel(
                     response.data.id,
                     response.data.ownerId,
+                    response.data.ownerUsername,
                     response.data.creation,
                     response.data.guestId,
+                    response.data.guestUsername,
                     response.data.messages
                 );
 

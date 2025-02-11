@@ -7,17 +7,20 @@ interface Props {
 
 interface ChatContextType {
     currentChat: ChatModel | null;
-    setCurrentChat: React.Dispatch<React.SetStateAction<ChatModel | null>>
+    setCurrentChat: React.Dispatch<React.SetStateAction<ChatModel | null>>;
+    chats: ChatModel[];
+    setChats: React.Dispatch<React.SetStateAction<ChatModel[]>>;
 }
 
 export const ChatContext = createContext<ChatContextType | null>(null);
 
 export default function ChatProvider({ children }: Props) {
     const [currentChat, setCurrentChat] = useState<ChatModel | null>(null);
+    const [chats, setChats] = useState<ChatModel[]>([]);
 
     return (
         <ChatContext.Provider
-            value={{ currentChat, setCurrentChat }}
+            value={{ currentChat, setCurrentChat, chats, setChats }}
         >
             {children}
         </ChatContext.Provider>

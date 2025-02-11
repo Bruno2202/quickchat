@@ -8,15 +8,16 @@ import OpacityOverlay from "./OpacityOverlay";
 import ChatModel from "../../core/model/ChatModel";
 import { UserContext } from "../../contexts/UserContext";
 import { ChatController } from "../../core/controllers/ChatController";
-import { UserModel } from "../../core/model/UserModel";
 import { motion } from "motion/react"
+import { ChatContext } from "../../contexts/ChatContext";
 
 export default function CreateChat() {
     const [time, setTime] = useState<number>(3);
     const [chatLink, setChatLink] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const { userData, setUserData } = useContext(UserContext)!
+    const { userData } = useContext(UserContext)!
+    const { setChats } = useContext(ChatContext)!
     const { isOpenModal, closeModal } = useContext(ModalContext)!
 
     useEffect(() => {
@@ -26,6 +27,7 @@ export default function CreateChat() {
             const createdChat = new ChatModel(
                 uuidv4().slice(0, 8),
                 userData.getId,
+                userData.getUsername,
                 new Date()
             );
 
@@ -35,7 +37,8 @@ export default function CreateChat() {
                 await ChatController.createChat(createdChat);
 
                 const updatedChats: ChatModel[] = await ChatController.getUserChats(createdChat.getOwnerId);
-                setUserData(new UserModel(userData.getId, userData.getUsername, updatedChats));
+                // setUserData(new UserModel(userData.getId, userData.getUsername, updatedChats));
+                setChats(updatedChats);
             } catch (error) {
                 console.error("Erro ao criar chat:", error);
             } finally {

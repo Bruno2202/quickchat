@@ -34,9 +34,9 @@ export class ChatBll {
         }
     }
 
-    static async getChatStatus(chatId: string): Promise<ChatModel | null> {
+    static async getChatInfo(chatId: string): Promise<ChatModel | null> {
         try {
-            return await ChatService.getChatStatus(chatId);
+            return await ChatService.getChatInfo(chatId);
         } catch (error) {
             console.log(error);
             return null;

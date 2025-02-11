@@ -46,7 +46,7 @@ export class ChatController {
 
     static async getChatInfo(chatId: string): Promise<ChatModel | null> {
         try {
-            return await ChatBll.getChatStatus(chatId);
+            return await ChatBll.getChatInfo(chatId);
         } catch (error) {
             toast.error(`Não foi possível obter status do chat`);
             console.log(`Erro ao checar status do servidor: ${error}`);

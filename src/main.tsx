@@ -14,9 +14,9 @@ const root = document.getElementById("root");
 
 ReactDOM.createRoot(root!).render(
 	<ModalProvider>
-		<UserProvider>
-			<SocketProvider>
-				<ChatProvider>
+		<ChatProvider>
+			<UserProvider>
+				<SocketProvider>
 					<BrowserRouter>
 						<Routes>
 							<Route path="/" element={<Login />} />
@@ -50,8 +50,8 @@ ReactDOM.createRoot(root!).render(
 							}}
 						/>
 					</BrowserRouter>
-				</ChatProvider>
-			</SocketProvider>
-		</UserProvider>
+				</SocketProvider>
+			</UserProvider>
+		</ChatProvider>
 	</ModalProvider>
 );

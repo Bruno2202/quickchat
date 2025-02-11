@@ -2,8 +2,8 @@ import { createContext, ReactNode, useState, useEffect, useContext } from "react
 import { io, Socket } from "socket.io-client";
 import { UserContext } from "./UserContext";
 import ChatModel from "../core/model/ChatModel";
-import { UserModel } from "../core/model/UserModel";
 import { ChatController } from "../core/controllers/ChatController";
+import { ChatContext } from "./ChatContext";
 
 interface Props {
     children: ReactNode;
@@ -19,16 +19,17 @@ export const SocketContext = createContext<SocketContextType | null>(null);
 export default function SocketProvider({ children }: Props) {
     const [socketInstance, setSocketInstance] = useState<Socket | null>(null);
 
-    const { userData, setUserData } = useContext(UserContext)!;
+    const { userData } = useContext(UserContext)!;
+    const { setChats } = useContext(ChatContext)!;
 
     useEffect(() => {
         if (socketInstance === null) {
             const socket = io(import.meta.env.VITE_API_DOMAIN);
-            
+
             socket.on('connect', () => {
                 setSocketInstance(socket);
             });
-        } 
+        }
     }, [socketInstance]);
 
     useEffect(() => {
@@ -36,18 +37,7 @@ export default function SocketProvider({ children }: Props) {
             socketInstance.on('guestAccess', () => {
                 const handleGetUserChats = async () => {
                     const updatedChats: ChatModel[] = await ChatController.getUserChats(userData.getId);
-
-                    console.log(updatedChats)
-
-                    if (userData) {
-                        const userDataUpdated = new UserModel(
-                            userData.getId,
-                            userData.getUsername,
-                            updatedChats
-                        );
-
-                        setUserData(userDataUpdated);
-                    }
+                    setChats(updatedChats);
                 }
                 handleGetUserChats();
             });

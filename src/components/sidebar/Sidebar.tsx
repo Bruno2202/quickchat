@@ -4,7 +4,6 @@ import { useContext, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
 import Footer from "./Footer";
 import { ModalContext } from "../../contexts/ModalContext";
-import { UserContext } from "../../contexts/UserContext";
 import NoMessages from "./NoMessages";
 import ChatModel from "../../core/model/ChatModel";
 import ChatPreview from "./ChatPreview";
@@ -16,8 +15,7 @@ export default function Sidebar() {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     const { openModal } = useContext(ModalContext)!;
-    const { userData } = useContext(UserContext)!;
-    const { currentChat, setCurrentChat } = useContext(ChatContext)!;
+    const { currentChat, setCurrentChat, chats } = useContext(ChatContext)!;
     const { socket, setSocket } = useContext(SocketContext)!;
 
     const navigate: NavigateFunction = useNavigate();
@@ -74,8 +72,8 @@ export default function Sidebar() {
                         <MessageCircle /> Conversas
                     </h1>
                     <div className="flex flex-col flex-1 overflow-y-auto gap-2">
-                        {userData?.getChats && userData.getChats.length > 0 ? (
-                            userData.getChats.map((chat: ChatModel) => (
+                        {chats && chats.length > 0 ? (
+                            chats.map((chat: ChatModel) => (
                                 <ChatPreview key={chat.getId} chat={chat} />
                             ))
                         ) : (
