@@ -1,4 +1,4 @@
-import { House, LogOut, MessageCircle, PanelRightClose, Plus } from "lucide-react";
+import { DoorOpen, House, LogOut, MessageCircle, PanelRightClose, Plus } from "lucide-react";
 import Option from "./Option";
 import { useContext, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router";
@@ -9,7 +9,6 @@ import ChatModel from "../../core/model/ChatModel";
 import ChatPreview from "./ChatPreview";
 import { ChatContext } from "../../contexts/ChatContext";
 import { SocketContext } from "../../contexts/SocketContext";
-
 
 export default function Sidebar() {
     const [isOpen, setIsOpen] = useState<boolean>(true);
@@ -22,6 +21,10 @@ export default function Sidebar() {
 
     async function handleCreateChat(): Promise<void> {
         openModal("CreateChat");
+    }
+
+    async function handleAccessChat(): Promise<void> {
+        openModal("AccessChat");
     }
 
     function handleReturnToHome(): void {
@@ -65,8 +68,9 @@ export default function Sidebar() {
 
             {isOpen && (
                 <div className="flex flex-col flex-1 gap-4 opacity-100 transition-opacity duration-100 h-full overflow-hidden">
-                    <div className="flex flex-col">
+                    <div className="flex flex-col gap-1">
                         <Option onClick={() => handleCreateChat()} Icon={Plus} text="Criar conversa" />
+                        <Option onClick={() => handleAccessChat()} Icon={DoorOpen} text="Acessar conversa" />
                     </div>
                     <h1 className="flex flex-row gap-2 items-center text-xl font-bold">
                         <MessageCircle /> Conversas
