@@ -10,11 +10,13 @@ import { UserContext } from "../../contexts/UserContext";
 import { ChatController } from "../../core/controllers/ChatController";
 import { motion } from "motion/react"
 import { ChatContext } from "../../contexts/ChatContext";
+import CursorTooltip from "../CursorTooltip";
 
 export default function CreateChat() {
     const [time, setTime] = useState<number>(3);
     const [chatLink, setChatLink] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [chatId, setChatId] = useState<string>("");
 
     const { userData } = useContext(UserContext)!
     const { setChats } = useContext(ChatContext)!
@@ -31,13 +33,12 @@ export default function CreateChat() {
                 new Date()
             );
 
+            setChatId(createdChat.getId);
             setChatLink(`http://localhost:5173/${createdChat.getId}`);
 
             try {
                 await ChatController.createChat(createdChat);
-
                 const updatedChats: ChatModel[] = await ChatController.getUserChats(createdChat.getOwnerId);
-                // setUserData(new UserModel(userData.getId, userData.getUsername, updatedChats));
                 setChats(updatedChats);
             } catch (error) {
                 console.error("Erro ao criar chat:", error);
@@ -69,14 +70,17 @@ export default function CreateChat() {
         }
     }, [isOpenModal, time]);
 
-    async function handleCopyLink(): Promise<void> {
-        await navigator.clipboard.writeText(chatLink);
-        toast("Copiado!", {
-            icon: "🔗"
-        });
-        closeModal("CreateChat");
-        setIsLoading(true);
-        setTime(3);
+    async function handleCopyChat(type: string): Promise<void> {
+        if (time === 0) {
+            await navigator.clipboard.writeText(type === "link" ? chatLink : type === "code" ? chatId : "");
+
+            toast("Copiado!", {
+                icon: "🔗"
+            });
+            closeModal("CreateChat");
+            setIsLoading(true);
+            setTime(3);
+        }
     }
 
     return (
@@ -98,7 +102,13 @@ export default function CreateChat() {
                             <Link className="text-lightGrey" size={20} />
                             <p className="text-lightGrey font-medium">Copie-o e envie para outra pessoa para iniciar a conversa</p>
                         </div>
-                        <div className="flex flex-col gap-2 items-start w-full my-8">
+                        <CursorTooltip text="🔗 Copiar" position="bottomRight">
+                            <p
+                                className={`flex flex-1 w-full items-center justify-center font-semibold text-white text-xl h-full my-4 transition-all ${time !== 0 && "blur-sm select-none"}`}
+                                onClick={() => handleCopyChat("code")}
+                            >{chatId}</p>
+                        </CursorTooltip>
+                        <div className="flex flex-col gap-2 items-start w-full mb-8">
                             <div className="flex flex-row items-center gap-2">
                                 <CircleAlert className="text-orange" size={20} />
                                 <p className="text-sm text-orange font-medium">Garanta que o convite seja enviado à pessoa certa</p>
@@ -110,7 +120,7 @@ export default function CreateChat() {
                         </div>
                         <Button
                             text={time === 0 ? "Copiar link" : time as unknown as string}
-                            onClick={() => handleCopyLink()}
+                            onClick={() => handleCopyChat("link")}
                             disabled={time === 0 ? false : true}
                         />
                     </motion.div >
