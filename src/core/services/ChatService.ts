@@ -20,6 +20,13 @@ interface MessageResponse {
     id: string;
 }
 
+export interface ApiResponse {
+    success: boolean;
+    message: string;
+    error: string;
+    chat: ChatModel | null;
+}
+
 export class ChatService {
     static async createChat(chat: ChatModel) {
         try {
@@ -99,6 +106,10 @@ export class ChatService {
         try {
             const response = await api.get(`/chat/info/${chatId}`);
 
+            if (response.data.chat === null) {
+                return response.data.chat;
+            }
+
             const chat: ChatModel = new ChatModel(
                 response.data.chat.id,
                 response.data.chat.ownerId,
@@ -108,10 +119,40 @@ export class ChatService {
                 response.data.chat.guestUsername
             );
 
+
             return chat;
         } catch (error) {
             console.error(error);
             return null;
+        }
+    }
+
+    static async accessChat(chatId: string): Promise<ApiResponse> {
+        try {
+            const response = await api.get(`/chat/info/${chatId}`);
+
+            const { error, message, success, chat } = response.data
+
+            if (!chat) {
+                return { chat, success, error, message };
+            }
+
+            const chatModel: ChatModel = new ChatModel(
+                chat.id,
+                chat.ownerId,
+                chat.ownerUsername,
+                chat.creation,
+                chat.guestId,
+                chat.guestUsername
+            );
+
+
+            return { success, message, error, chat: chatModel };
+        } catch (err: any) {
+            const { error, message } = err.response?.data;
+            console.log(`Não possível obter dados do chat: ${error ? error : message}`);
+
+            return err.response?.data;
         }
     }
 

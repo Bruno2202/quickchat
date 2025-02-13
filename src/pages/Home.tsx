@@ -15,6 +15,7 @@ import { ChatContext } from "../contexts/ChatContext";
 import MessageModel from "../core/model/MessageModel";
 import ClosedChat from "../components/modals/ClosedChat";
 import NotFoundChat from "../components/modals/NotFoundChat";
+import AccessChat from "../components/modals/AccessChat";
 // import DevMonitor from "../components/dev/DevMonitor";
 
 export default function Home() {
@@ -161,6 +162,7 @@ export default function Home() {
             <CreateChat />
             <CreateUser />
             <ClosedChat />
+            <AccessChat />
             <NotFoundChat />
             {/* <DevMonitor /> */}
         </div>

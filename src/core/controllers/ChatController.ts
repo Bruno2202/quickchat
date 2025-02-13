@@ -1,6 +1,7 @@
 import toast from "react-hot-toast";
 import { ChatBll } from "../bll/ChatBll";
 import ChatModel from "../model/ChatModel";
+import { ApiResponse, ChatService } from "../services/ChatService";
 
 export class ChatController {
     static async createChat(chat: ChatModel): Promise<void> {
@@ -50,6 +51,31 @@ export class ChatController {
         } catch (error) {
             toast.error(`Não foi possível obter status do chat`);
             console.log(`Erro ao checar status do servidor: ${error}`);
+            return null;
+        }
+    }
+
+    static async accessChat(chatId: string, userId: string): Promise<ChatModel | null> {
+        try {
+            const res = await ChatBll.accessChat(chatId);
+
+            if (res.message || res.error) {
+                toast(res.message ? res.message : res.error);
+                return null;
+            }
+
+            if (res.chat?.getOwnerId && res.chat?.getGuestId) {
+                toast("Esta conversa já foi acessada por todos os participantes");
+                return null;
+            }
+
+            if (res.chat?.getOwnerId === userId || res.chat?.getGuestId === userId) {
+                toast("Você já acessou essa conversa");
+                return null;
+            }
+
+            return res.chat
+        } catch (error: any) {
             return null;
         }
     }

@@ -1,5 +1,5 @@
 import ChatModel from "../model/ChatModel";
-import { ChatService } from "../services/ChatService";
+import { ApiResponse, ChatService } from "../services/ChatService";
 
 export class ChatBll {
     static async createChat(chat: ChatModel): Promise<boolean> {
@@ -42,6 +42,15 @@ export class ChatBll {
             return null;
         }
     }
+
+    static async accessChat(chatId: string): Promise<ApiResponse> {
+        try {
+            return await ChatService.accessChat(chatId);
+        } catch (err: any) {
+            return err.response.data;
+        }
+    }
+
 
     static async updateChat(updateChat: ChatModel): Promise<ChatModel | null> {
         try {

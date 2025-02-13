@@ -1,10 +1,10 @@
 import toast from "react-hot-toast"
-import { AccessBll } from "../bll/AccessBll";
+import { AuthBll } from "../bll/AuthBll";
 import { AuthService } from "../services/AuthService";
 
 export class AuthController {
     static validateForm(username: string): boolean {
-        if (!AccessBll.validateForm(username)) {
+        if (!AuthBll.validateForm(username)) {
             toast.error("Insira um nome de usuário válido");
             return false;
         }
