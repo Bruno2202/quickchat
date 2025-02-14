@@ -33,6 +33,12 @@ export default function AccessChat() {
         }
     };
 
+    function handleCloseModal() {
+        closeModal("AccessChat");
+        setChatId("");
+        setIsLoading(false);
+    }
+
 
     return (
         isOpenModal("AccessChat") && (
@@ -47,7 +53,7 @@ export default function AccessChat() {
                     <div className="flex w-full justify-end">
                         <X
                             className="text-grey hover:text-orange cursor-pointer transition-colors"
-                            onClick={() => closeModal("AccessChat")}
+                            onClick={() => handleCloseModal()}
                         />
                     </div>
                     <div className="flex flex-row items-center justify-start w-full">
