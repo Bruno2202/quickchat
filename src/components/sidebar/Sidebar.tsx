@@ -14,7 +14,7 @@ export default function Sidebar() {
     const [isOpen, setIsOpen] = useState<boolean>(true);
 
     const { openModal } = useContext(ModalContext)!;
-    const { currentChat, setCurrentChat, chats } = useContext(ChatContext)!;
+    const { currentChat, setCurrentChat, chats, setChats } = useContext(ChatContext)!;
     const { socket, setSocket } = useContext(SocketContext)!;
 
     const navigate: NavigateFunction = useNavigate();
@@ -43,6 +43,7 @@ export default function Sidebar() {
         socket?.disconnect();
         setSocket(null);
         setCurrentChat(null);
+        setChats([]);
     }
 
     return (
