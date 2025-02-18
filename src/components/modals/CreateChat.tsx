@@ -34,7 +34,7 @@ export default function CreateChat() {
             );
 
             setChatId(createdChat.getId);
-            setChatLink(`http://localhost:5173/${createdChat.getId}`);
+            setChatLink(`${import.meta.env.VITE_APP_DOMAIN}/${createdChat.getId}`);
 
             try {
                 await ChatController.createChat(createdChat);

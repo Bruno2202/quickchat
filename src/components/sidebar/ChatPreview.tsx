@@ -19,7 +19,7 @@ export default function ChatPreview({ chat }: Props) {
     }
 
     async function handleCopyLink(): Promise<void> {
-        await navigator.clipboard.writeText(`http://localhost:5173/${chat.getId}`);
+        await navigator.clipboard.writeText(`${import.meta.env.VITE_APP_DOMAIN}/${chat.getId}`);
         toast("Copiado!", {
             icon: "🔗"
         });
