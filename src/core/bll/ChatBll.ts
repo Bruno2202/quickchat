@@ -43,14 +43,29 @@ export class ChatBll {
         }
     }
 
-    static async accessChat(chatId: string): Promise<ApiResponse> {
+    static async accessChat(chatId: string, userId: string): Promise<ApiResponse> {
         try {
-            return await ChatService.accessChat(chatId);
+            const apiRes = await ChatService.accessChat(chatId);
+            const userChats = await this.getUserChats(userId);
+
+            for (const chat of userChats) {
+                if (chat.getGuestId === apiRes.chat?.getOwnerId || chat.getOwnerId === apiRes.chat?.getOwnerId) {
+                    const chatInfo: ApiResponse = {
+                        success: true,
+                        message: "Você já possui uma conversa com esse participante",
+                        error: apiRes.error,
+                        chat: null
+                    }
+
+                    return chatInfo;
+                }
+            }
+
+            return apiRes;
         } catch (err: any) {
             return err.response.data;
         }
     }
-
 
     static async updateChat(updateChat: ChatModel): Promise<ChatModel | null> {
         try {

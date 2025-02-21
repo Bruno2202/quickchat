@@ -90,9 +90,9 @@ export default function CreateChat() {
                 {isLoading ? (
                     <motion.div layout className="flex flex-col items-center relative w-auto h-auto">
                         <div className="flex flex-row text-white font-bold text-3rem text-center">
-                            <p className="animate-bounce">.</p>
-                            <p className="animate-bounce200">.</p>
-                            <p className="animate-bounce400">.</p>
+                            <p className="animate-bounce select-none">.</p>
+                            <p className="animate-bounce200 select-none">.</p>
+                            <p className="animate-bounce400 select-none">.</p>
                         </div>
                     </motion.div >
                 ) : (
@@ -110,12 +110,12 @@ export default function CreateChat() {
                         </CursorTooltip>
                         <div className="flex flex-col gap-2 items-start w-full mb-8">
                             <div className="flex flex-row items-center gap-2">
-                                <CircleAlert className="text-orange" size={20} />
-                                <p className="text-sm text-orange font-medium">Garanta que o convite seja enviado à pessoa certa</p>
+                                <CircleAlert className="text-yellow" size={20} />
+                                <p className="text-sm text-yellow font-medium">Garanta que o convite seja enviado à pessoa certa</p>
                             </div>
                             <div className="flex flex-row items-center gap-2">
-                                <CircleAlert className="text-orange" size={20} />
-                                <p className="text-sm text-orange font-medium">Depois que outro usuário entrar, mais ninguém poderá acessar a conversa</p>
+                                <CircleAlert className="text-yellow" size={20} />
+                                <p className="text-sm text-yellow font-medium">Depois que outro usuário entrar, mais ninguém poderá acessar a conversa</p>
                             </div>
                         </div>
                         <Button
