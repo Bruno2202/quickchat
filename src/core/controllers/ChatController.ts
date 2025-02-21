@@ -56,7 +56,7 @@ export class ChatController {
 
     static async accessChat(chatId: string, userId: string): Promise<ChatModel | null> {
         try {
-            const res = await ChatBll.accessChat(chatId);
+            const res = await ChatBll.accessChat(chatId, userId);
 
             if (res.message || res.error) {
                 toast(res.message ? res.message : res.error);

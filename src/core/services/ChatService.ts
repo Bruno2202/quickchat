@@ -119,7 +119,6 @@ export class ChatService {
                 response.data.chat.guestUsername
             );
 
-
             return chat;
         } catch (error) {
             console.error(error);
@@ -145,7 +144,6 @@ export class ChatService {
                 chat.guestId,
                 chat.guestUsername
             );
-
 
             return { success, message, error, chat: chatModel };
         } catch (err: any) {
