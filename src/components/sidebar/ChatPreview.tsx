@@ -31,7 +31,7 @@ export default function ChatPreview({ chat }: Props) {
                 className="flex flex-row items-center w-full h-8 gap-2 items-cente rounded-8 text-lightGrey font-semibold hover:bg-grey hover:text-white transition-colors cursor-pointer"
                 onClick={() => handleOnClick()}
             >
-                <div className={`flex items-center justify-center bg-[blue] rounded-8 w-8 h-8`}>
+                <div className={`flex items-center justify-center bg-blue rounded-8 w-8 h-8`}>
                     <UserRound className="text-darkGrey" />
                 </div>
                 {userData?.getId == chat.getOwnerId ? (
