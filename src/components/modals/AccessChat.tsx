@@ -39,11 +39,10 @@ export default function AccessChat() {
         setIsLoading(false);
     }
 
-
     return (
         isOpenModal("AccessChat") && (
             <div className="flex items-center justify-center absolute w-full h-full">
-                <OpacityOverlay />
+                <OpacityOverlay onClick={() => handleCloseModal()} />
                 <motion.form
                     layout
                     transition={{ duration: 0.4, ease: "circOut" }}

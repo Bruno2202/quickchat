@@ -86,7 +86,7 @@ export default function CreateChat() {
     return (
         isOpenModal("CreateChat") && (
             <div className="flex items-center justify-center absolute w-full h-full">
-                <OpacityOverlay />
+                <OpacityOverlay onClick={() => handleCopyChat("link")} />
                 {isLoading ? (
                     <motion.div layout className="flex flex-col items-center relative w-auto h-auto">
                         <div className="flex flex-row text-white font-bold text-3rem text-center">

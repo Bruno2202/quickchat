@@ -17,7 +17,7 @@ export default function ClosedChat() {
     return (
         isOpenModal("ClosedChat") && (
             <div className="flex items-center justify-center absolute w-full h-full">
-                <OpacityOverlay />
+                <OpacityOverlay onClick={() => handleOnClick()}/>
                 <div className="flex flex-col items-center relative w-auto h-auto p-4 bg-darkGrey rounded-8">
                     <div className="flex flex-col gap-2 w-full mb-8 items-center">
                         <p className="text-white font-bold text-1.8rem">Essa conversa está fechada!</p>
