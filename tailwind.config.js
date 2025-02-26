@@ -10,11 +10,13 @@ export default {
         'black': '#000104',
         'white': '#FFFFFF',
         'blue': '#187CFF',
+        'lightBlue': '#92D6FF',
         'darkGrey': '#1E2024',
         'grey': '#3A3D45',
         'lightGrey': '#8D939E',
         'orange': '#FF4E00',
-        'yellow': '#D79E0A'
+        'yellow': '#D79E0A',
+        'green': '#45FF0A'
       },
       borderRadius: {
         '8': '8px',
