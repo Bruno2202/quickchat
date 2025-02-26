@@ -11,23 +11,31 @@ interface Props {
 
 interface SocketContextType {
     socket: Socket | null;
-    setSocket: React.Dispatch<React.SetStateAction<Socket | null>>
+    setSocket: React.Dispatch<React.SetStateAction<Socket | null>>;
+    isConnecting: boolean;
+    setIsConnecting: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export const SocketContext = createContext<SocketContextType | null>(null);
 
 export default function SocketProvider({ children }: Props) {
     const [socketInstance, setSocketInstance] = useState<Socket | null>(null);
+    const [isConnecting, setIsConnecting] = useState(true);
 
     const { userData } = useContext(UserContext)!;
     const { setChats } = useContext(ChatContext)!;
 
     useEffect(() => {
         if (socketInstance === null) {
-            const socket = io(import.meta.env.VITE_API_DOMAIN);
+            const socket = io(import.meta.env.VITE_API_DOMAIN, {
+                transports: ["websocket", "polling"],
+                reconnectionAttempts: 5,
+                reconnectionDelay: 2000,
+            });
 
             socket.on('connect', () => {
                 setSocketInstance(socket);
+                setIsConnecting(false);
             });
         }
     }, [socketInstance]);
@@ -52,7 +60,9 @@ export default function SocketProvider({ children }: Props) {
         <SocketContext.Provider
             value={{
                 socket: socketInstance,
-                setSocket: setSocketInstance
+                setSocket: setSocketInstance,
+                isConnecting,
+                setIsConnecting
             }}
         >
             {children}

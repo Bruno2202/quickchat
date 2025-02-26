@@ -61,7 +61,7 @@ export default function CreateUser({ navigateTo }: Props) {
                 <form
                     action="none"
                     onSubmit={handleSubmit}
-                    className=" flex flex-col relative bg-darkGrey w-1/3 h-auto items-center justify-center py-4 px-8 rounded-8"
+                    className="flex flex-col relative bg-darkGrey h-auto items-center justify-center py-4 px-8 rounded-8"
                 >
                     <h1 className="font-bold text-white text-2xl mb-8">
                         QuickChat⚡
