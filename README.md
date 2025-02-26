@@ -5,7 +5,7 @@
 
 ## Plataformas 💻
 
-O QuickChat está disponível na web e pode ser acessado diretamente através deste [link](https://github.com/Bruno2202/quickchat).
+O QuickChat está disponível na web e pode ser acessado diretamente através deste [link](https://quickchatapp.netlify.app/).
 
 ## Tecnologias Utilizadas 🌐
 
