@@ -25,6 +25,11 @@ body {
     background: #25272c;
 }
 
+a {
+    color: #92D6FF !important;
+    text-decoration: underline !important;
+}
+
 @layer components {
     .btnAnimation {
         @apply active:shadow-sm active:scale-95 duration-75 transition-all;

@@ -1,6 +1,7 @@
 import MessageModel from "../../core/model/MessageModel";
 import { UserModel } from "../../core/model/UserModel"
 import AlertMessage from "./AlertMessage";
+import Linkify from 'linkify-react';
 
 interface Props {
     index: number;
@@ -18,9 +19,9 @@ export default function Message({ index, userData, message }: Props) {
                     {message.getSenderId !== userData?.getId && (
                         <p className="font-bold">{message.getSenderUsername}</p>
                     )}
-                    <p className="break-words">
-                        {message.getMessage}
-                    </p>
+                    <Linkify>
+                        <p className="break-words">{message.getMessage}</p>
+                    </Linkify>
                     <p className="break-words text-xs text-right">
                         {new Date(message.getSentAt).toLocaleString('pt-BR', {
                             hour: '2-digit',
