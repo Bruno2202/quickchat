@@ -48,24 +48,33 @@ export default function Sidebar() {
 
     return (
         <aside
-            className={`flex flex-col p-4 text-white ${isOpen ? 'w-80 bg-darkGrey' : 'w-16 bg-black'} duration-300 h-full`}
+            className={`flex flex-col  text-white ${isOpen ? 'w-80 bg-darkGrey p-4' : 'w-0 py-4 bg-black'} duration-300 h-full`}
         >
-            <div className={`flex ${isOpen ? 'flex-row justify-between mb-4' : 'flex-col-reverse gap-4 h-full'}`}>
-                <div className="mt-auto">
-                    <LogOut
-                        className="hover:text-orange transition-all duration-100 ease-in cursor-pointer"
-                        onClick={() => handleLogOut()}
+            {isOpen ? (
+                <div className="flex flex-row justify-between mb-4">
+                    <>
+                        <LogOut
+                            className="hover:text-orange transition-all duration-100 ease-in cursor-pointer"
+                            onClick={() => handleLogOut()}
+                        />
+                        <House
+                            className="hover:text-blue transition-all duration-100 ease-in cursor-pointer"
+                            onClick={() => handleReturnToHome()}
+                        />
+                    </>
+                    <PanelRightClose
+                        className="rotate-180 transition-all duration-100 ease-in hover:text-blue cursor-pointer"
+                        onClick={() => setIsOpen(!isOpen)}
                     />
                 </div>
-                <House
-                    className="hover:text-blue transition-all duration-100 ease-in cursor-pointer"
-                    onClick={() => handleReturnToHome()}
-                />
-                <PanelRightClose
-                    className={`${isOpen && 'rotate-180'} transition-all duration-100 ease-in hover:text-blue cursor-pointer`}
-                    onClick={() => setIsOpen(!isOpen)}
-                />
-            </div>
+            ) : (
+                <div className="absolute px-4">
+                    <PanelRightClose
+                        className="transition-all duration-100 ease-in hover:text-blue cursor-pointer"
+                        onClick={() => setIsOpen(!isOpen)}
+                    />
+                </div>
+            )}
 
             {isOpen && (
                 <div className="flex flex-col flex-1 gap-4 opacity-100 transition-opacity duration-100 h-full overflow-hidden">
